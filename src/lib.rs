@@ -1,7 +1,7 @@
 pub fn get_input() -> &'static str {
-    "There's no way
-this is a haiku.
-Expect a false result execute"
+    "An old silent pond
+A frog jumps into the pond—
+Splash! Silence again."
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -48,4 +48,24 @@ pub fn count_syllables(word: &str) -> usize {
 
     println!("Word: {}, syllables: {}", word, syllable_count);
     syllable_count
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn simple_words() {
+        assert_eq!(count_syllables("word"), 1);
+        assert_eq!(count_syllables("the"), 1);
+        assert_eq!(count_syllables("baby"), 2);
+        assert_eq!(count_syllables("frog"), 1);
+        assert_eq!(count_syllables("haiku"), 2);
+    }
+
+    #[test]
+    fn silent_e() {
+        assert_eq!(count_syllables("silence"), 2);
+        assert_eq!(count_syllables("execute"), 4);
+    }
 }
