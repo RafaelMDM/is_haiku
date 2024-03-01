@@ -1,9 +1,18 @@
-use is_haiku::{count_syllables, get_input};
+use is_haiku::count_syllables;
+use std::io::{self, BufRead};
 
 fn main() -> Result<(), ()> {
-    let result: Vec<usize> = get_input()
+    let stdin = io::stdin();
+
+    let result: Vec<usize> = stdin
+        .lock()
         .lines()
-        .map(|line| line.split(" ").map(count_syllables).sum::<usize>())
+        .map(|line| {
+            line.expect("Failed to read line from stdin")
+                .split(" ")
+                .map(count_syllables)
+                .sum()
+        })
         .collect();
 
     match result[..] {

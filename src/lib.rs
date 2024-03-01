@@ -1,9 +1,3 @@
-pub fn get_input() -> &'static str {
-    "An old silent pond
-A frog jumps into the pond—
-Splash! Silence again."
-}
-
 #[derive(Debug, PartialEq, Eq)]
 enum Character {
     Vowel(char),
@@ -35,10 +29,11 @@ pub fn count_syllables(word: &str) -> usize {
             }
             Character::Vowel(_) => {
                 if let Some(Character::Vowel(_)) = last_character {
-                } else {
-                    syllable_count += 1;
-                    current_syllable.clear();
+                    continue;
                 }
+
+                syllable_count += 1;
+                current_syllable.clear();
             }
             Character::Consonant => (),
         }
