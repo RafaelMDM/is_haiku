@@ -14,9 +14,34 @@ impl From<char> for Character {
     }
 }
 
+fn is_silent_e(word: &str, idx: usize, word_len: usize) -> bool {
+    if idx != word_len - 1 {
+        return false;
+    }
+
+    if word_len <= 3 {
+        return true;
+    }
+
+    let char_one_space_before = word.chars().nth(idx - 1).unwrap();
+    let char_two_spaces_before: Character = word.chars().nth(idx - 2).unwrap().into();
+    if char_one_space_before == 'l' && char_two_spaces_before == Character::Consonant {
+        return false;
+    }
+
+    if let Character::Vowel(_) = char_two_spaces_before {
+        if char_one_space_before == 't' {
+            return true;
+        }
+        return false;
+    }
+
+    true
+}
+
 pub fn count_syllables(word: &str) -> usize {
     let characters: Vec<Character> = word.chars().map(|x| x.into()).collect();
-    let number_of_chars = characters.len();
+    let word_len = characters.len();
     let mut syllable_count = 0;
     let mut current_syllable: Vec<Character> = Vec::new();
 
@@ -24,7 +49,7 @@ pub fn count_syllables(word: &str) -> usize {
         let last_character = current_syllable.last();
 
         match character {
-            Character::Vowel('e') if idx == number_of_chars - 1 && number_of_chars > 3 => {
+            Character::Vowel('e') if is_silent_e(word, idx, word_len) => {
                 break;
             }
             Character::Vowel(_) => {
@@ -39,6 +64,10 @@ pub fn count_syllables(word: &str) -> usize {
         }
 
         current_syllable.push(character);
+    }
+
+    if syllable_count == 0 {
+        syllable_count = 1;
     }
 
     println!("Word: {}, syllables: {}", word, syllable_count);
@@ -60,7 +89,9 @@ mod test {
 
     #[test]
     fn silent_e() {
+        assert_eq!(count_syllables("ape"), 1);
+        assert_eq!(count_syllables("little"), 2);
         assert_eq!(count_syllables("silence"), 2);
-        assert_eq!(count_syllables("execute"), 4);
+        assert_eq!(count_syllables("execute"), 3);
     }
 }
